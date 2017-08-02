@@ -7,15 +7,18 @@ const MasterBot = require("./lib/MasterBot").UniversalMasterBot;
 function main() {
 
   console.log("mainBot: starting...");
-  var config = nconf.env().argv().file({file:'localConfig.json', search:true}).get();
+  var config = nconf.env().argv().file({ file: 'localConfig.json', search: true }).get();
 
-  appInsights.setup(config.APP_INSIGHTS_KEY);
-  appInsights.start();
+  if (config.APP_INSIGHTS_KEY) {
+    appInsights.setup(config.APP_INSIGHTS_KEY);
+    appInsights.start();
+  }
 
   var masterBot = new MasterBot(new botbuilder.ChatConnector({
-    appId : config.MICROSOFT_APP_ID,
-    appPassword : config.MICROSOFT_APP_PASSWORD
+    appId: config.MICROSOFT_APP_ID,
+    appPassword: config.MICROSOFT_APP_PASSWORD
   }));
+  
   masterBot.startServer(config);
   masterBot._server.get("/public/webchat", (req, res, next) => {
     let html = `<html><head><title>IPA MainBot</title></head><body>
@@ -30,7 +33,7 @@ function main() {
   let introMessage = config.INTRO_MESSAGE || "INSERT INTRO TEXT HERE";
   let errorMessage = config.ERROR_MESSAGE || "I'm sorry, I don't know how to handle that request";
 
-  masterBot.dialog("/", 
+  masterBot.dialog("/",
     (session, args) => {
       if (!session.message.text || session.message.text.length === 0) {
         session.send(errorMessage);

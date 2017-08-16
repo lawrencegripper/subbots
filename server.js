@@ -58,7 +58,8 @@ function main() {
     if (activity.membersAdded.filter(x => x.id === activity.address.user.id).length > 0) {
       let subbotCards = []
       let message = new botbuilder.Message().address(activity.address)
-      Object.keys(masterBot._subs).forEach(sub => {
+      Object.keys(masterBot._subs).forEach(subId => {
+        let sub = masterBot._subs[subId]
         subbotCards.push(new botbuilder.HeroCard()
           .title(sub.name)
           .text(sub.description)

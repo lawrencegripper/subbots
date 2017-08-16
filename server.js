@@ -18,7 +18,7 @@ function main() {
     appId: config.MICROSOFT_APP_ID,
     appPassword: config.MICROSOFT_APP_PASSWORD
   }));
-  
+
   masterBot.startServer(config);
   masterBot._server.get("/public/webchat", (req, res, next) => {
     let html = `<html><head><title>IPA MainBot</title></head><body>
@@ -53,6 +53,23 @@ function main() {
   masterBot.on("conversationUpdate", (activity) => {
     if (activity.source === "webchat") {
       masterBot.send(new botbuilder.Message().address(activity.address).text(welcomeMessage));
+    }
+
+    if (activity.membersAdded.filter(x => x.id === activity.address.user.id).length > 0) {
+      let subbotCards = []
+      let message = new botbuilder.Message().address(activity.address)
+      Object.keys(masterBot._subs).forEach(sub => {
+        subbotCards.push(new botbuilder.HeroCard()
+          .title(sub.name)
+          .text(sub.description)
+          .images([new botbuilder.CardImage().url('https://patient.azureedge.net/gfx/interim-patient-logo.svg')])
+          .buttons([
+            botbuilder.CardAction.imBack(null, "I'd like to check my symtoms", "Start chatting")
+          ]))
+      })
+      message.attachmentLayout(botbuilder.AttachmentLayout.carousel)
+      message.attachments(subbotCards)
+      masterBot.send(message)
     }
   });
 

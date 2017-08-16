@@ -51,11 +51,13 @@ function main() {
 
   let welcomeMessage = config.WELCOME_MESSAGE || "Welcome to the Master Bot";
   masterBot.on("conversationUpdate", (activity) => {
-    if (activity.source === "webchat") {
-      masterBot.send(new botbuilder.Message().address(activity.address).text(welcomeMessage));
-    }
+    
+    if (activity.membersAdded.filter(x => x.id.startsWith(config.BOT_HANDLE)).length > 0) {
 
-    if (activity.membersAdded.filter(x => x.id === activity.address.user.id).length > 0) {
+      if (activity.source === "webchat") {
+        masterBot.send(new botbuilder.Message().address(activity.address).text(welcomeMessage));
+      }
+
       let subbotCards = []
       let message = new botbuilder.Message().address(activity.address)
       Object.keys(masterBot._subs).forEach(subId => {
@@ -65,7 +67,7 @@ function main() {
           .text(sub.description)
           .images([new botbuilder.CardImage().url('https://patient.azureedge.net/gfx/interim-patient-logo.svg')])
           .buttons([
-            botbuilder.CardAction.imBack(null, "I'd like to check my symtoms", "Start chatting")
+            botbuilder.CardAction.imBack(null, sub.question, "Start chatting")
           ]))
       })
       message.attachmentLayout(botbuilder.AttachmentLayout.carousel)

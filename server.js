@@ -58,21 +58,21 @@ function main() {
         masterBot.send(new botbuilder.Message().address(activity.address).text(welcomeMessage));
       }
 
-      let subbotCards = []
-      let message = new botbuilder.Message().address(activity.address)
-      Object.keys(masterBot._subs).forEach(subId => {
-        let sub = masterBot._subs[subId]
-        subbotCards.push(new botbuilder.HeroCard()
-          .title(sub.name)
-          .text(sub.description)
-          .images([new botbuilder.CardImage().url('https://patient.azureedge.net/gfx/interim-patient-logo.svg')])
-          .buttons([
-            botbuilder.CardAction.imBack(null, sub.question, "Start chatting")
-          ]))
-      })
-      message.attachmentLayout(botbuilder.AttachmentLayout.carousel)
-      message.attachments(subbotCards)
-      masterBot.send(message)
+      // let subbotCards = []
+      // let message = new botbuilder.Message().address(activity.address)
+      // Object.keys(masterBot._subs).forEach(subId => {
+      //   let sub = masterBot._subs[subId]
+      //   subbotCards.push(new botbuilder.HeroCard()
+      //     .title(sub.name)
+      //     .text(sub.description)
+      //     .images([new botbuilder.CardImage().url('https://patient.azureedge.net/gfx/interim-patient-logo.svg')])
+      //     .buttons([
+      //       botbuilder.CardAction.imBack(null, sub.question, "Start chatting")
+      //     ]))
+      // })
+      // message.attachmentLayout(botbuilder.AttachmentLayout.carousel)
+      // message.attachments(subbotCards)
+      // masterBot.send(message)
     }
   });
 
